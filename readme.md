@@ -37,8 +37,8 @@ To obtain your cookie value, follow these steps:
 
 #### Use the package to create images with DALLE3:
 ```js
-await bing.createImage("cute cat").then((urls) => {
-    console.log(urls); // string[]
+await bing.createImage("cute cat").then((res) => {
+    console.log(res.urls); // string[]
 });
 ```
 
