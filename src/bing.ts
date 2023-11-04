@@ -19,6 +19,7 @@ class BingApi {
             this.browser = await puppeteer.launch({
                 headless: "new",
                 timeout: this.options.timeout,
+                args: ["--no-sandbox"]
             })
             resolve();
         });
@@ -46,11 +47,17 @@ class BingApi {
             await this.setCookieAndReload(page);
 
             // click on  accept button if its there
-            await page.waitForSelector('#bnp_btn_accept');
-            await page.click('#bnp_btn_accept');
+            try {
+                await page.waitForSelector('#bnp_btn_accept');
+                await page.click('#bnp_btn_accept');
+            } catch (e) {
+                console.log(
+                    "Accept button not found, continuing..."
+                );
+            }
 
             // wait until img tags with .mimg class are loaded
-            await page.waitForSelector('.mimg');
+            await page.waitForSelector('.mimg',);
 
             // then extract the src attribute of those img tags
             const res = await page.$$eval('.mimg', imgs => imgs.map(img => img.getAttribute('src')));

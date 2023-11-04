@@ -9,7 +9,8 @@ var BingApi = class {
     return new Promise(async (resolve, reject) => {
       this.browser = await puppeteer.launch({
         headless: "new",
-        timeout: this.options.timeout
+        timeout: this.options.timeout,
+        args: ["--no-sandbox"]
       });
       resolve();
     });
@@ -33,8 +34,14 @@ var BingApi = class {
         waitUntil: "networkidle2"
       });
       await this.setCookieAndReload(page);
-      await page.waitForSelector("#bnp_btn_accept");
-      await page.click("#bnp_btn_accept");
+      try {
+        await page.waitForSelector("#bnp_btn_accept");
+        await page.click("#bnp_btn_accept");
+      } catch (e) {
+        console.log(
+          "Accept button not found, continuing..."
+        );
+      }
       await page.waitForSelector(".mimg");
       const res = await page.$$eval(".mimg", (imgs) => imgs.map((img) => img.getAttribute("src")));
       const urls = res.map((url) => {
