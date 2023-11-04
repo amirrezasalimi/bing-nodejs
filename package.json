@@ -1,0 +1,25 @@
+{
+  "name": "bing-nodejs",
+  "version": "1.0.0",
+  "description": "",
+  "main": "dist/index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "node build.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "files": [
+    "dist"
+  ],
+  "devDependencies": {
+    "@esbuild-plugins/node-resolve": "^0.2.2",
+    "esbuild": "^0.19.5",
+    "esbuild-plugin-tsc": "^0.4.0",
+    "tsc": "^2.0.4",
+    "typescript": "^5.2.2"
+  },
+  "dependencies": {
+    "puppeteer": "^21.5.0"
+  }
+}
