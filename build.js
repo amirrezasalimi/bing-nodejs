@@ -1,7 +1,7 @@
 const build = require('esbuild').build
-const NodeResolve = require('@esbuild-plugins/node-resolve').default
-const esbuildPluginTsc = require('esbuild-plugin-tsc')
-const execSync = require('child_process').execSync
+// const NodeResolve = require('@esbuild-plugins/node-resolve').default
+// const esbuildPluginTsc = require('esbuild-plugin-tsc')
+// const execSync = require('child_process').execSync
 
 const packageJson = require('./package.json'); // Load the package.json file
 let externalPkgs = [
@@ -14,7 +14,6 @@ build({
     outfile: 'dist/index.js',
     platform: 'node',
     bundle: true,
-    format: "esm",
     tsconfig: 'tsconfig.json',
     external: externalPkgs,
     plugins: [

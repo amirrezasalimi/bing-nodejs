@@ -18,8 +18,12 @@ class BingApi {
         return new Promise(async (resolve, reject) => {
             this.browser = await puppeteer.launch({
                 headless: "new",
-                timeout: this.options.timeout,
-                args: ["--no-sandbox"]
+                defaultViewport: {
+                    width: 1920,
+                    height: 1080
+                },
+                args: ["--no-sandbox"],
+                timeout: 1000 * 10,
             })
             resolve();
         });
@@ -41,7 +45,7 @@ class BingApi {
 
             // pptr
             const page = await this.browser.newPage();
-            await page.goto(`https://www.bing.com/images/create?q=${query}`, {
+            await page.goto(`https://www.bing.com/images/create`, {
                 waitUntil: 'networkidle2',
             });
             await this.setCookieAndReload(page);
@@ -55,12 +59,24 @@ class BingApi {
                     "Accept button not found, continuing..."
                 );
             }
+            // focus on #sb_form_q
+            await page.focus('#sb_form_q');
+            // type query
+            await page.keyboard.type(query);
+            // press enter
+            await page.keyboard.press('Enter');
 
             // wait until img tags with .mimg class are loaded
-            await page.waitForSelector('.mimg',);
+            await page.waitForSelector('.imgpt', {
+                timeout: this.options.timeout || 1000 * 60
+            });
 
-            // then extract the src attribute of those img tags
-            const res = await page.$$eval('.mimg', imgs => imgs.map(img => img.getAttribute('src')));
+            // there is multiple .imgpt and each has one img tag in it , so we need to get src of each img tag
+            const res = await page.$$eval('.imgpt', (imgs) => {
+                return imgs.map((img) => {
+                    return img.querySelector("img")?.getAttribute("src");
+                });
+            });
 
             // remove params from url
             const urls = res.map((url) => { return url?.split("?")[0] });
